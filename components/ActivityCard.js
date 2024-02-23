@@ -7,7 +7,11 @@ const ActivityCard = () => {
             <Text style={styles.title}>FBLA Officer</Text>
             <Text style={styles.dateRange}>2024 Aug 5 to 2025 May 25</Text>
             <Text style={styles.description}>Committed as the official member of the JCHS FBLA Chapter</Text>
-            <View style={styles.tagIndicator}></View>
+            <View style={styles.tagIndicator}>
+                <View>
+                    
+                </View>
+            </View>
         </TouchableOpacity>
     );
 };
@@ -21,7 +25,6 @@ const styles = StyleSheet.create({
         elevation: 5,
 
         backgroundColor: 'whitesmoke',
-
 
         padding: 20,
     },
