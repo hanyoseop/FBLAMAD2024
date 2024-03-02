@@ -1,20 +1,50 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, KeyboardAvoidingView, View, Text, TextInput, TouchableOpacity } from 'react-native';
 
-import { auth } from '../firebase';
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from 'firebase/auth';
+import { AUTH } from "../firebase"
+
+import { useNavigation } from '@react-navigation/native';
 
 const LoginScreen = () => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('') 
 
-    const handleSignUp = () => {
-        auth
-            .createUserWithEmailAndPassword(email, password)
-            .then(userCredentials => {
-                const user = userCredentials.user;
-                console.log(user.email);
+    const auth = AUTH;
+    const navigation = useNavigation();
+
+    useEffect(() => {
+        onAuthStateChanged(auth, (user) => {
+            if(user) {
+                navigation.replace("Home");
+            }
+        })
+    }, []) 
+
+    const handleSignIn = () => {
+        signInWithEmailAndPassword(auth, email, password)
+            .then((userCredential) => {
+                const user = userCredential.user;
+                console.log("Signed In Using", user.email);
             })
-            .catch(error => alert(error.message))
+            .catch((error) => {
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                console.log(errorCode, errorMessage);
+            })
+    }
+
+    const handleSignUp = () => {
+        createUserWithEmailAndPassword(auth, email, password)
+            .then((userCredential) => {
+                const user = userCredential.user;
+                console.log("Signed Up Using", user.email);
+            })
+            .catch((error) => {
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                console.log(errorCode, errorMessage);
+            })
     }
 
     return (
@@ -40,6 +70,7 @@ const LoginScreen = () => {
             <View style={styles.buttonContainer}>
                 <TouchableOpacity
                     style={styles.submitButton}
+                    onPress={handleSignIn}
                 >
                     <Text style={styles.buttonText}>Login</Text>
                 </TouchableOpacity>
